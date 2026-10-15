@@ -27,38 +27,16 @@
          the main section is rebuilt by the daily watchlist scan, so edits here are overwritten. -->
     <style>
       .watchlist-card { margin: 0 0 20px; }
-      .report-search { margin: 0 0 8px; }
+      .report-search { margin: 0 0 16px; }
       .report-search input {
         width: 100%; padding: 10px 16px; font: inherit; color: var(--text);
         background: var(--surface); border: 1px solid var(--border); border-radius: 999px;
       }
       .report-search input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
       .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-      .no-match { color: var(--muted); margin: 16px 0; }
-      .stock { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin: 16px 0; }
-      .stock[hidden], .no-match[hidden], .stale[hidden] { display: none; }
-      .stock-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
-      .stock-head .ticker { font-size: 1.4rem; font-weight: 700; }
-      .stock-head .name { color: var(--muted); }
-      .stock h3 { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 18px 0 8px; }
-      .chart { width: 100%; height: 300px; }
-      .legend { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 6px; font-size: 0.8rem; color: var(--muted); }
-      .swatch { display: inline-block; width: 14px; height: 3px; margin-right: 5px; vertical-align: middle; border-radius: 2px; }
-      .swatch.ma20 { background: #a259d9; }
-      .swatch.ma50 { background: var(--accent); }
-      .swatch.ma200 { background: #f59f00; }
-      .swatch.sup { border-top: 2px dashed #2e9e4f; height: 0; }
-      .swatch.res { border-top: 2px dashed #e04848; height: 0; }
-      .status { margin: 10px 0 0; font-size: 0.95rem; }
-      .asof, .age, .muted { color: var(--muted); }
-      .latest, .muted { margin: 0; }
-      .stale { margin-left: 4px; padding: 1px 8px; font-size: 0.8rem; font-weight: 600; color: var(--todo-text); background: var(--todo-bg); border: 1px solid var(--todo-border); border-radius: 999px; }
-      .older summary { cursor: pointer; color: var(--muted); }
-      .older ul { margin: 8px 0 0; padding-left: 20px; }
-      @media (max-width: 480px) {
-        .stock { padding: 14px; }
-        .chart { height: 240px; }
-      }
+      .card .name { margin-top: 2px; font-size: 0.9rem; color: var(--muted); }
+      .cards li[hidden], .no-match[hidden] { display: none; }
+      .no-match { color: var(--muted); margin: 0 0 40px; }
     </style>
     <a class="card watchlist-card" href="reports/watchlist.html">
       <div class="ticker">Daily watchlist</div>
@@ -66,145 +44,393 @@
       <div class="date">October 15, 2026</div>
     </a>
     <div class="report-search">
-      <label class="visually-hidden" for="report-search">Search reports by ticker or company</label>
+      <label class="visually-hidden" for="report-search">Search by ticker or company</label>
       <input id="report-search" type="search" placeholder="Search by ticker or company" autocomplete="off">
     </div>
+    <ul class="cards stock-cards">
+      <li data-search="mrna moderna, inc.">
+        <a class="card" href="stocks/MRNA.html">
+          <div class="ticker">MRNA</div>
+          <div class="name">Moderna, Inc.</div>
+          <div class="tag">At highs</div>
+          <div class="date">Latest report: October 15, 2026</div>
+        </a>
+      </li>
+      <li data-search="ko the coca-cola company">
+        <a class="card" href="stocks/KO.html">
+          <div class="ticker">KO</div>
+          <div class="name">The Coca-Cola Company</div>
+          <div class="tag">At highs</div>
+          <div class="date">Latest report: October 13, 2026</div>
+        </a>
+      </li>
+      <li data-search="nvda nvidia corporation">
+        <a class="card" href="stocks/NVDA.html">
+          <div class="ticker">NVDA</div>
+          <div class="name">NVIDIA Corporation</div>
+          <div class="tag">Below 50-day</div>
+          <div class="date">Latest report: October 13, 2026</div>
+        </a>
+      </li>
+      <li data-search="peng penguin solutions, inc.">
+        <a class="card" href="stocks/PENG.html">
+          <div class="ticker">PENG</div>
+          <div class="name">Penguin Solutions, Inc.</div>
+          <div class="tag">Uptrend</div>
+          <div class="date">Latest report: October 13, 2026</div>
+        </a>
+      </li>
+      <li data-search="pltr palantir technologies inc.">
+        <a class="card" href="stocks/PLTR.html">
+          <div class="ticker">PLTR</div>
+          <div class="name">Palantir Technologies Inc.</div>
+          <div class="tag">Uptrend</div>
+          <div class="date">Latest report: October 13, 2026</div>
+        </a>
+      </li>
+      <li data-search="amzn amazon.com, inc.">
+        <a class="card" href="stocks/AMZN.html">
+          <div class="ticker">AMZN</div>
+          <div class="name">Amazon.com, Inc.</div>
+          <div class="tag">Below 50-day</div>
+          <div class="date">Latest report: October 12, 2026</div>
+        </a>
+      </li>
+      <li data-search="aaoi applied optoelectronics, inc.">
+        <a class="card" href="stocks/AAOI.html">
+          <div class="ticker">AAOI</div>
+          <div class="name">Applied Optoelectronics, Inc.</div>
+          <div class="tag">Downtrend</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="aehr aehr test systems">
+        <a class="card" href="stocks/AEHR.html">
+          <div class="ticker">AEHR</div>
+          <div class="name">Aehr Test Systems</div>
+          <div class="tag">Below 200-day</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="amd advanced micro devices, inc.">
+        <a class="card" href="stocks/AMD.html">
+          <div class="ticker">AMD</div>
+          <div class="name">Advanced Micro Devices, Inc.</div>
+          <div class="tag">Uptrend</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="apls ">
+        <a class="card" href="stocks/APLS.html">
+          <div class="ticker">APLS</div>
+          <div class="name"></div>
+          <div class="tag">No chart data</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="app applovin corporation">
+        <a class="card" href="stocks/APP.html">
+          <div class="ticker">APP</div>
+          <div class="name">Applovin Corporation</div>
+          <div class="tag">Downtrend</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="asts ast spacemobile, inc.">
+        <a class="card" href="stocks/ASTS.html">
+          <div class="ticker">ASTS</div>
+          <div class="name">AST SpaceMobile, Inc.</div>
+          <div class="tag">Downtrend</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="avgo broadcom inc.">
+        <a class="card" href="stocks/AVGO.html">
+          <div class="ticker">AVGO</div>
+          <div class="name">Broadcom Inc.</div>
+          <div class="tag">Downtrend</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="bbai bigbear.ai, inc.">
+        <a class="card" href="stocks/BBAI.html">
+          <div class="ticker">BBAI</div>
+          <div class="name">BigBear.ai, Inc.</div>
+          <div class="tag">Downtrend</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="capr capricor therapeutics, inc.">
+        <a class="card" href="stocks/CAPR.html">
+          <div class="ticker">CAPR</div>
+          <div class="name">Capricor Therapeutics, Inc.</div>
+          <div class="tag">Downtrend</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="cgem cullinan therapeutics, inc.">
+        <a class="card" href="stocks/CGEM.html">
+          <div class="ticker">CGEM</div>
+          <div class="name">Cullinan Therapeutics, Inc.</div>
+          <div class="tag">Below 200-day</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="cifr cipher digital inc.">
+        <a class="card" href="stocks/CIFR.html">
+          <div class="ticker">CIFR</div>
+          <div class="name">Cipher Digital Inc.</div>
+          <div class="tag">Downtrend</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="cls celestica, inc.">
+        <a class="card" href="stocks/CLS.html">
+          <div class="ticker">CLS</div>
+          <div class="name">Celestica, Inc.</div>
+          <div class="tag">Downtrend</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="crcl circle internet group, inc.">
+        <a class="card" href="stocks/CRCL.html">
+          <div class="ticker">CRCL</div>
+          <div class="name">Circle Internet Group, Inc.</div>
+          <div class="tag">Mixed</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="crmd cormedix inc.">
+        <a class="card" href="stocks/CRMD.html">
+          <div class="ticker">CRMD</div>
+          <div class="name">CorMedix Inc.</div>
+          <div class="tag">Below 200-day</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="crvo cervomed inc.">
+        <a class="card" href="stocks/CRVO.html">
+          <div class="ticker">CRVO</div>
+          <div class="name">CervoMed Inc.</div>
+          <div class="tag">Downtrend</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="crwv coreweave, inc.">
+        <a class="card" href="stocks/CRWV.html">
+          <div class="ticker">CRWV</div>
+          <div class="name">CoreWeave, Inc.</div>
+          <div class="tag">Downtrend</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="hood robinhood markets, inc.">
+        <a class="card" href="stocks/HOOD.html">
+          <div class="ticker">HOOD</div>
+          <div class="name">Robinhood Markets, Inc.</div>
+          <div class="tag">Below 50-day</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="hut hut 8 corp.">
+        <a class="card" href="stocks/HUT.html">
+          <div class="ticker">HUT</div>
+          <div class="name">Hut 8 Corp.</div>
+          <div class="tag">Below 200-day</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="iova iovance biotherapeutics, inc.">
+        <a class="card" href="stocks/IOVA.html">
+          <div class="ticker">IOVA</div>
+          <div class="name">Iovance Biotherapeutics, Inc.</div>
+          <div class="tag">Uptrend</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="iren iren limited">
+        <a class="card" href="stocks/IREN.html">
+          <div class="ticker">IREN</div>
+          <div class="name">IREN LIMITED</div>
+          <div class="tag">Downtrend</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="ivvd invivyd, inc.">
+        <a class="card" href="stocks/IVVD.html">
+          <div class="ticker">IVVD</div>
+          <div class="name">Invivyd, Inc.</div>
+          <div class="tag">Downtrend</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="joby joby aviation, inc.">
+        <a class="card" href="stocks/JOBY.html">
+          <div class="ticker">JOBY</div>
+          <div class="name">Joby Aviation, Inc.</div>
+          <div class="tag">Downtrend</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="knsa kiniksa pharmaceuticals interna">
+        <a class="card" href="stocks/KNSA.html">
+          <div class="ticker">KNSA</div>
+          <div class="name">Kiniksa Pharmaceuticals Interna</div>
+          <div class="tag">Uptrend</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="kod kodiak sciences inc">
+        <a class="card" href="stocks/KOD.html">
+          <div class="ticker">KOD</div>
+          <div class="name">Kodiak Sciences Inc</div>
+          <div class="tag">Uptrend</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="meta meta platforms, inc.">
+        <a class="card" href="stocks/META.html">
+          <div class="ticker">META</div>
+          <div class="name">Meta Platforms, Inc.</div>
+          <div class="tag">Uptrend</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="mrvl marvell technology, inc.">
+        <a class="card" href="stocks/MRVL.html">
+          <div class="ticker">MRVL</div>
+          <div class="name">Marvell Technology, Inc.</div>
+          <div class="tag">Uptrend</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="mu micron technology, inc.">
+        <a class="card" href="stocks/MU.html">
+          <div class="ticker">MU</div>
+          <div class="name">Micron Technology, Inc.</div>
+          <div class="tag">Below 50-day</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="oklo oklo inc.">
+        <a class="card" href="stocks/OKLO.html">
+          <div class="ticker">OKLO</div>
+          <div class="name">Oklo Inc.</div>
+          <div class="tag">Downtrend</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="onds ondas inc">
+        <a class="card" href="stocks/ONDS.html">
+          <div class="ticker">ONDS</div>
+          <div class="name">Ondas Inc</div>
+          <div class="tag">Downtrend</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="oric oric pharmaceuticals, inc.">
+        <a class="card" href="stocks/ORIC.html">
+          <div class="ticker">ORIC</div>
+          <div class="name">Oric Pharmaceuticals, Inc.</div>
+          <div class="tag">Below 50-day</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="pcrx pacira biosciences, inc.">
+        <a class="card" href="stocks/PCRX.html">
+          <div class="ticker">PCRX</div>
+          <div class="name">Pacira BioSciences, Inc.</div>
+          <div class="tag">At highs</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="rklb rocket lab corporation">
+        <a class="card" href="stocks/RKLB.html">
+          <div class="ticker">RKLB</div>
+          <div class="name">Rocket Lab Corporation</div>
+          <div class="tag">Downtrend</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="smr nuscale power corporation">
+        <a class="card" href="stocks/SMR.html">
+          <div class="ticker">SMR</div>
+          <div class="name">NuScale Power Corporation</div>
+          <div class="tag">Downtrend</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="snow snowflake inc.">
+        <a class="card" href="stocks/SNOW.html">
+          <div class="ticker">SNOW</div>
+          <div class="name">Snowflake Inc.</div>
+          <div class="tag">Uptrend</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="sofi sofi technologies, inc.">
+        <a class="card" href="stocks/SOFI.html">
+          <div class="ticker">SOFI</div>
+          <div class="name">SoFi Technologies, Inc.</div>
+          <div class="tag">Downtrend</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="soun soundhound ai, inc.">
+        <a class="card" href="stocks/SOUN.html">
+          <div class="ticker">SOUN</div>
+          <div class="name">SoundHound AI, Inc.</div>
+          <div class="tag">Downtrend</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="tgtx tg therapeutics, inc.">
+        <a class="card" href="stocks/TGTX.html">
+          <div class="ticker">TGTX</div>
+          <div class="name">TG Therapeutics, Inc.</div>
+          <div class="tag">Uptrend</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="tsla tesla, inc.">
+        <a class="card" href="stocks/TSLA.html">
+          <div class="ticker">TSLA</div>
+          <div class="name">Tesla, Inc.</div>
+          <div class="tag">Below 200-day</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="upst upstart holdings, inc.">
+        <a class="card" href="stocks/UPST.html">
+          <div class="ticker">UPST</div>
+          <div class="name">Upstart Holdings, Inc.</div>
+          <div class="tag">Downtrend</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+      <li data-search="vrt vertiv holdings, llc">
+        <a class="card" href="stocks/VRT.html">
+          <div class="ticker">VRT</div>
+          <div class="name">Vertiv Holdings, LLC</div>
+          <div class="tag">Downtrend</div>
+          <div class="date">No report yet</div>
+        </a>
+      </li>
+    </ul>
     <p class="no-match" hidden>No reports for that stock yet.</p>
-    <section class="stock" id="stock-KO" data-search="ko the coca-cola company">
-      <div class="stock-head"><span class="ticker">KO</span><span class="name">The Coca-Cola Company</span></div>
-      <h3>Chart today (updated daily)</h3>
-      <div class="chart" data-ticker="KO" role="img" aria-label="KO daily candles for the last 12 months"></div>
-      <div class="legend"><span><i class="swatch ma20"></i>20-day</span><span><i class="swatch ma50"></i>50-day</span><span><i class="swatch ma200"></i>200-day</span><span><i class="swatch sup"></i>Support</span><span><i class="swatch res"></i>Resistance</span></div>
-      <p class="status">Uptrend · $92.00 · support $89.85 (-2.3%) · at highs (52-week high $94.10) · Today: breakout: closed above the prior 52-week high of $91.94 <span class="asof">(as of Oct 15)</span></p>
-      <h3>Latest AI report</h3>
-      <p class="latest"><a href="reports/KO-long-2026-10-13.html">Long-term hold · October 13, 2026</a> <span class="age" data-date="2026-10-13" data-horizon="long">(2 days old)</span> <span class="stale" hidden>may be out of date</span></p>
-      <h3>Older reports</h3>
-      <p class="muted">No older reports yet.</p>
-    </section>
-    <section class="stock" id="stock-NVDA" data-search="nvda nvidia corporation">
-      <div class="stock-head"><span class="ticker">NVDA</span><span class="name">NVIDIA Corporation</span></div>
-      <h3>Chart today (updated daily)</h3>
-      <div class="chart" data-ticker="NVDA" role="img" aria-label="NVDA daily candles for the last 12 months"></div>
-      <div class="legend"><span><i class="swatch ma20"></i>20-day</span><span><i class="swatch ma50"></i>50-day</span><span><i class="swatch ma200"></i>200-day</span><span><i class="swatch sup"></i>Support</span><span><i class="swatch res"></i>Resistance</span></div>
-      <p class="status">Pullback · $217.23 · support $213.19 (-1.9%) · resistance $228.94 (+5.4%) · Today: nothing unusual <span class="asof">(as of Oct 15)</span></p>
-      <h3>Latest AI report</h3>
-      <p class="latest"><a href="reports/NVDA-short-2026-10-13.html">Short-term trade · October 13, 2026</a> <span class="age" data-date="2026-10-13" data-horizon="short">(2 days old)</span> <span class="stale" hidden>may be out of date</span></p>
-      <h3>Older reports</h3>
-      <p class="muted">No older reports yet.</p>
-    </section>
-    <section class="stock" id="stock-PENG" data-search="peng penguin solutions, inc.">
-      <div class="stock-head"><span class="ticker">PENG</span><span class="name">Penguin Solutions, Inc.</span></div>
-      <h3>Chart today (updated daily)</h3>
-      <div class="chart" data-ticker="PENG" role="img" aria-label="PENG daily candles for the last 12 months"></div>
-      <div class="legend"><span><i class="swatch ma20"></i>20-day</span><span><i class="swatch ma50"></i>50-day</span><span><i class="swatch ma200"></i>200-day</span><span><i class="swatch sup"></i>Support</span><span><i class="swatch res"></i>Resistance</span></div>
-      <p class="status">Uptrend · $61.86 · support $53.25 (-13.9%) · 52-week high $89.86 (+45.3%) · Today: moved -8.5% today; closed below the 20-day average <span class="asof">(as of Oct 15)</span></p>
-      <h3>Latest AI report</h3>
-      <p class="latest"><a href="reports/PENG-short-2026-10-13.html">Short-term trade · October 13, 2026</a> <span class="age" data-date="2026-10-13" data-horizon="short">(2 days old)</span> <span class="stale" hidden>may be out of date</span></p>
-      <h3>Older reports</h3>
-      <p class="muted">No older reports yet.</p>
-    </section>
-    <section class="stock" id="stock-PLTR" data-search="pltr palantir technologies inc.">
-      <div class="stock-head"><span class="ticker">PLTR</span><span class="name">Palantir Technologies Inc.</span></div>
-      <h3>Chart today (updated daily)</h3>
-      <div class="chart" data-ticker="PLTR" role="img" aria-label="PLTR daily candles for the last 12 months"></div>
-      <div class="legend"><span><i class="swatch ma20"></i>20-day</span><span><i class="swatch ma50"></i>50-day</span><span><i class="swatch ma200"></i>200-day</span><span><i class="swatch sup"></i>Support</span><span><i class="swatch res"></i>Resistance</span></div>
-      <p class="status">Uptrend · $200.50 · support $193.13 (-3.7%) · 52-week high $212.94 (+6.2%) · Today: nothing unusual <span class="asof">(as of Oct 15)</span></p>
-      <h3>Latest AI report</h3>
-      <p class="latest"><a href="reports/PLTR-long-2026-10-13.html">Long-term hold · October 13, 2026</a> <span class="age" data-date="2026-10-13" data-horizon="long">(2 days old)</span> <span class="stale" hidden>may be out of date</span></p>
-      <h3>Older reports</h3>
-      <p class="muted">No older reports yet.</p>
-    </section>
-    <section class="stock" id="stock-AMZN" data-search="amzn amazon.com, inc.">
-      <div class="stock-head"><span class="ticker">AMZN</span><span class="name">Amazon.com, Inc.</span></div>
-      <h3>Chart today (updated daily)</h3>
-      <div class="chart" data-ticker="AMZN" role="img" aria-label="AMZN daily candles for the last 12 months"></div>
-      <div class="legend"><span><i class="swatch ma20"></i>20-day</span><span><i class="swatch ma50"></i>50-day</span><span><i class="swatch ma200"></i>200-day</span><span><i class="swatch sup"></i>Support</span><span><i class="swatch res"></i>Resistance</span></div>
-      <p class="status">Pullback · $254.76 · support $253.41 (-0.5%) · resistance $257.29 (+1.0%) · Today: nothing unusual <span class="asof">(as of Oct 15)</span></p>
-      <h3>Latest AI report</h3>
-      <p class="latest"><a href="reports/AMZN-long-2026-10-12.html">Long-term hold · October 12, 2026</a> <span class="age" data-date="2026-10-12" data-horizon="long">(3 days old)</span> <span class="stale" hidden>may be out of date</span></p>
-      <h3>Older reports</h3>
-      <p class="muted">No older reports yet.</p>
-    </section>
-    <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
-    <script src="reports/charts-data.js?v=2026-10-15"></script>
     <script>
     (function () {
-      // Report ages, recomputed with the viewer's date.
-      var today = new Date(); today.setHours(0, 0, 0, 0);
-      document.querySelectorAll('.age').forEach(function (el) {
-        var p = el.getAttribute('data-date').split('-');
-        var days = Math.round((today - new Date(+p[0], +p[1] - 1, +p[2])) / 86400000);
-        el.textContent = '(' + (days <= 0 ? 'today' : days === 1 ? '1 day old' : days + ' days old') + ')';
-        var flag = el.parentNode.querySelector('.stale');
-        if (flag) flag.hidden = !(el.getAttribute('data-horizon') === 'short' && days > 5);
-      });
-
-      // Search by ticker or company name.
       var input = document.getElementById('report-search');
-      var blocks = Array.prototype.slice.call(document.querySelectorAll('.stock'));
+      var cards = Array.prototype.slice.call(document.querySelectorAll('.stock-cards li'));
       var none = document.querySelector('.no-match');
       input.addEventListener('input', function () {
         var q = input.value.trim().toLowerCase(), shown = 0;
-        blocks.forEach(function (b) {
-          var ok = !q || b.getAttribute('data-search').indexOf(q) !== -1;
-          b.hidden = !ok; if (ok) shown++;
+        cards.forEach(function (c) {
+          var ok = !q || c.getAttribute('data-search').indexOf(q) !== -1;
+          c.hidden = !ok; if (ok) shown++;
         });
         none.hidden = shown > 0;
       });
-
-      // Charts, drawn when they scroll into view and recolored when the theme changes.
-      var data = window.CHART_DATA || {}, drawn = [];
-      function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
-      function theme() {
-        return {
-          layout: { background: { color: css('--surface') }, textColor: css('--muted') },
-          grid: { vertLines: { color: css('--border') }, horzLines: { color: css('--border') } }
-        };
-      }
-      function pts(rows) { return rows.map(function (r) { return { time: r[0], value: r[1] }; }); }
-      function draw(el) {
-        var d = data[el.getAttribute('data-ticker')];
-        if (!d || !window.LightweightCharts) return;
-        var chart = LightweightCharts.createChart(el, Object.assign({
-          autoSize: true,
-          rightPriceScale: { borderVisible: false },
-          timeScale: { borderVisible: false },
-          handleScroll: { mouseWheel: false, pressedMouseMove: true, horzTouchDrag: true, vertTouchDrag: false },
-          handleScale: { mouseWheel: false, pinch: true, axisPressedMouseMove: true }
-        }, theme()));
-        var candles = chart.addCandlestickSeries({
-          upColor: '#2e9e4f', downColor: '#e04848', borderVisible: false,
-          wickUpColor: '#2e9e4f', wickDownColor: '#e04848'
-        });
-        candles.setData(d.candles.map(function (c) { return { time: c[0], open: c[1], high: c[2], low: c[3], close: c[4] }; }));
-        var opts = { lineWidth: 1, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false };
-        chart.addLineSeries(Object.assign({ color: '#a259d9' }, opts)).setData(pts(d.ma20));
-        var ma50 = chart.addLineSeries(Object.assign({ color: css('--accent') }, opts));
-        ma50.setData(pts(d.ma50));
-        chart.addLineSeries(Object.assign({ color: '#f59f00' }, opts)).setData(pts(d.ma200));
-        d.levels.forEach(function (l) {
-          candles.createPriceLine({ price: l.price, color: l.kind === 'support' ? '#2e9e4f' : '#e04848',
-                                    lineWidth: 1, lineStyle: 2, axisLabelVisible: true, title: l.title });
-        });
-        chart.timeScale().fitContent();
-        drawn.push({ chart: chart, ma50: ma50 });
-      }
-      var els = document.querySelectorAll('.chart');
-      if ('IntersectionObserver' in window) {
-        var io = new IntersectionObserver(function (entries) {
-          entries.forEach(function (e) { if (e.isIntersecting) { io.unobserve(e.target); draw(e.target); } });
-        }, { rootMargin: '200px' });
-        els.forEach(function (el) { io.observe(el); });
-      } else {
-        els.forEach(draw);
-      }
-      if (window.matchMedia) {
-        var mq = window.matchMedia('(prefers-color-scheme: dark)');
-        var recolor = function () {
-          drawn.forEach(function (x) { x.chart.applyOptions(theme()); x.ma50.applyOptions({ color: css('--accent') }); });
-        };
-        if (mq.addEventListener) mq.addEventListener('change', recolor); else if (mq.addListener) mq.addListener(recolor);
-      }
     })();
     </script>
   </main>
