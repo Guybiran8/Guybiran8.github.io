@@ -4,6 +4,17 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Guy Biran</title>
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Guy Biran">
+  <meta property="og:url" content="https://guybiran8.github.io/">
+  <meta property="og:image" content="https://guybiran8.github.io/img/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -17,65 +28,86 @@
     </div>
   </nav>
 
-  <main class="wrap">
-    <header class="intro">
-      <h1>Guy Biran</h1>
-      <p class="todo">[WRITE THIS YOURSELF: one line about you]</p>
-      <ul class="links">
-        <li><a href="https://github.com/Guybiran8">GitHub</a></li>
-        <li><a href="mailto:guybiran100@gmail.com">Email</a></li>
-      </ul>
+  <main>
+    <header class="intro hero">
+      <div class="wrap hero-grid">
+        <div class="hero-text">
+          <h1>Guy Biran</h1>
+          <p class="todo">[WRITE THIS YOURSELF: one line about you]</p>
+          <ul class="links">
+            <li><a href="https://github.com/Guybiran8">GitHub</a></li>
+            <li><a href="mailto:guybiran100@gmail.com">Email</a></li>
+          </ul>
+        </div>
+        <div class="hero-shot">
+          <img class="preview-main" src="img/stock-chart.jpg" alt="MRNA · Guy Biran" width="1360" height="988" fetchpriority="high" decoding="async">
+        </div>
+      </div>
+      <div class="wrap hero-strip">
+        <a class="scan-strip" id="scan-strip" href="reports.html" hidden>
+          <span class="pulse" aria-hidden="true"></span>
+          <span class="scan-text"></span>
+        </a>
+      </div>
     </header>
 
-    <h2 class="section-title">Projects</h2>
-
-    <article class="project" id="stock-debate">
-      <h2>Stock Debate</h2>
-      <p class="summary">An AI research tool where Grok researches a stock, Claude and ChatGPT argue bull vs bear, and Grok judges the evidence.</p>
-      <p><a href="reports.html">See example reports</a></p>
-      <p><a href="https://github.com/Guybiran8/stock-debate">View the code</a></p>
-      <p><a href="reports/watchlist.html">See today's watchlist</a></p>
-
-      <h3>What I built</h3>
-      <p>Ever since I started trading, I've had an issue with researching stocks. I didn't have the patience to read everything or analyze the same graph for 20 minutes for a move that wouldn't even hit. So instead I would watch TikTok or Instagram, listening to what other people said without checking the evidence myself.</p>
-      <p>So I decided to make a tool that does the research with you and teaches you along the way. It gathers all the relevant info on a stock based on whether you're trading short-term or holding long-term: earnings, deals, reports, lawsuits, X posts and everything else that matters. Then Claude and ChatGPT debate the bull and bear case. I picked two AIs and a judge so they can check each other's mistakes and argue about the information, which makes it more accurate. When I started, I used only one AI, and aside from the information not being accurate, some of it was made up. It claimed Palantir was worth $3 billion, when it was actually worth over $400 billion, and named deals with other companies that it couldn't back up with any source.</p>
-      <p>At the end it summarizes the points, what you're betting on, and what would prove you wrong, so you can make a smarter trade while learning why you're placing it. It also shows you a chart of the stock with support, resistance and more, so you learn how to analyze a graph yourself.</p>
-      <p>I came up with the idea, and Claude did most of the coding. I tested the reports to make sure the information was accurate. When one AI kept winning every debate, I realized the results weren't always based on the best evidence, so I changed the judge to focus on the evidence instead of who made the better argument. I also kept improving the summaries because they were too vague, and I wanted people who don't know much about stocks to understand them better. I added a chart and kept making changes to improve the tool.</p>
-
-      <h3>Challenges</h3>
-      <p>Throughout this project there were many small challenges, like delayed data and long waiting times for a result. But I think the biggest one was that the winner depended on the AI, not the stock. Grok would judge who argued better, who had better research or better counter-arguments, but not which side the evidence actually supported. I didn't notice much of it at the start, but then I realized ChatGPT was always winning. So I ran a few tests and switched which AI argued each side, and ChatGPT won 5 out of 5 times no matter which side it was on. I upgraded Claude to a stronger model and changed the judge so it rates the evidence instead of who argued better. When I swapped the sides again, the results came out with the same main points no matter which AI argued.</p>
-      <p>At first, the tool also took a really long time to run, about 14 minutes for one stock. I timed each step and found that most of it was Grok thinking for too long while judging. After I turned its thinking setting down, the judging went from about 10 minutes to under a minute, and a full run dropped from 14 minutes to about 4. The reports were just as good.</p>
-
-      <h3>What I learned</h3>
-      <p>This project surprisingly taught me a lot more than I expected. One important thing I learned is how easy it is to trick AI. It's a known thing that they sometimes make stuff up, but honestly I didn't realize how bad it was. Not only did they work with wrong data, they also debated why it was right.</p>
-      <p>Another thing I learned is to look at the bigger picture, because sometimes even when everything adds up, it's not the full story. A report can be based only on true facts and still be wrong. It researched KO and found a possible $14 billion tax bill from a fight with the IRS, but in reality KO had already paid $6 billion of it as a deposit, and the company expects to win the appeal.</p>
-      <p>Now, every time I read a report, no matter where it came from, I double-check the information.</p>
-
-      <h3>Results</h3>
-      <p class="todo">[WRITE THIS YOURSELF]</p>
-    </article>
-
-    <article class="project" id="trading-agent">
-      <h2>Trading Agent</h2>
-      <p class="summary">My automated stock scanning agent.</p>
-      <p><a href="https://github.com/Guybiran8/trading-agent">View the code</a></p>
-
-      <h3>What I built</h3>
-      <p class="todo">[WRITE THIS YOURSELF]</p>
-
-      <h3>Challenges</h3>
-      <p class="todo">[WRITE THIS YOURSELF]</p>
-
-      <h3>What I learned</h3>
-      <p class="todo">[WRITE THIS YOURSELF]</p>
-
-      <h3>Results</h3>
-      <p class="todo">[WRITE THIS YOURSELF]</p>
-    </article>
+    <section class="wrap projects" id="projects" aria-labelledby="projects-title">
+      <h2 class="section-title" id="projects-title">Projects</h2>
+      <div class="project-cards">
+      <article class="project-card" id="stock-debate">
+        <div class="card-shot"><img src="img/reports-grid.jpg" alt="Reports · Guy Biran" width="1424" height="984" loading="lazy" decoding="async"></div>
+        <div class="card-body">
+          <h3><a class="card-link" href="stock-debate.html">Stock Debate</a></h3>
+          <p class="summary">An AI research tool where Grok researches a stock, Claude and ChatGPT argue bull vs bear, and Grok judges the evidence.</p>
+          <div class="project-links">
+            <p><a href="reports.html">See example reports</a></p>
+            <p><a href="https://github.com/Guybiran8/stock-debate">View the code</a></p>
+            <p><a href="reports/watchlist.html">See today's watchlist</a></p>
+          </div>
+        </div>
+      </article>
+      <article class="project-card" id="trading-agent">
+        <div class="card-body">
+          <h3><a class="card-link" href="trading-agent.html">Trading Agent</a></h3>
+          <p class="summary">My automated stock scanning agent.</p>
+          <div class="project-links">
+            <p><a href="https://github.com/Guybiran8/trading-agent">View the code</a></p>
+          </div>
+        </div>
+      </article>
+      </div>
+    </section>
   </main>
 
   <footer>
-    <div class="wrap">Guy Biran</div>
+    <div class="wrap">
+      <span>Guy Biran</span>
+      <ul class="footer-links">
+        <li><a href="https://github.com/Guybiran8">GitHub</a></li>
+        <li><a href="mailto:guybiran100@gmail.com">Email</a></li>
+        <li><a href="stock-debate.html">Stock Debate</a></li>
+        <li><a href="trading-agent.html">Trading Agent</a></li>
+      </ul>
+    </div>
   </footer>
+
+  <script>
+    // Live scan strip: copy the counts from reports.html's "Scan of ..." line. Hidden if anything fails.
+    (function () {
+      var strip = document.getElementById('scan-strip');
+      if (!strip || !window.fetch || !window.DOMParser) return;
+      fetch('reports.html', { cache: 'no-store' })
+        .then(function (r) { return r.ok ? r.text() : Promise.reject(r.status); })
+        .then(function (html) {
+          var line = new DOMParser().parseFromString(html, 'text/html').querySelector('.scan-line');
+          var first = line && line.firstChild;
+          var counts = first && first.nodeType === 3 ? first.nodeValue.replace(/[\s·]+$/, '').trim() : '';
+          if (!counts) return;
+          strip.querySelector('.scan-text').textContent = counts;
+          strip.hidden = false;
+        })
+        .catch(function () {});
+    })();
+  </script>
 </body>
 </html>
