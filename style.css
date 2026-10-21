@@ -298,6 +298,13 @@ h1 {
   to { transform: scale(3); opacity: 0; }
 }
 .hero-text .todo { max-width: 34rem; }
+.hero-text .about {
+  max-width: 36rem;
+  margin: 0;
+  color: var(--body);
+  font-size: 1.1875rem;
+  line-height: 1.7;
+}
 .hero-shot img {
   display: block;
   width: 100%;
