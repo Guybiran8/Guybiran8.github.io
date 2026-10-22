@@ -45,13 +45,10 @@
           <img class="preview-main" src="img/stock-chart.jpg" alt="MRNA · Guy Biran" width="1360" height="1028" fetchpriority="high" decoding="async">
           <!-- Live chart of the first stock on reports.html; replaces the screenshot only once it has drawn -->
           <div class="hero-chart" hidden>
-            <a class="hero-chart-ticker"></a>
             <div class="hero-chart-plot" role="img"></div>
           </div>
           <!-- 3D version of the same chart on capable desktops; the 2D chart stays underneath as the fallback -->
-          <div class="hero-3d" hidden>
-            <a class="hero-chart-ticker"></a>
-          </div>
+          <div class="hero-3d" hidden></div>
         </div>
       </div>
       <div class="wrap hero-strip">
@@ -182,21 +179,31 @@
         strip.hidden = false;
       }).catch(function () {});
 
-      // Live hero chart: the first card's stock page holds its chart data in window.CHART. Drawn with the
-      // same Lightweight Charts setup as the stock pages; the screenshot stays if anything fails.
+      // Live hero chart: a random card's stock page holds its chart data in window.CHART. If that page or its
+      // data fails, up to two more random stocks are tried. Drawn with the same Lightweight Charts setup as
+      // the stock pages; no stock name is shown. The screenshot stays if everything fails.
       var box = document.querySelector('.hero-chart');
       if (!box) return;
-      var page;
       reports.then(function (doc) {
-        var card = doc.querySelector('.stock-cards .card');
-        if (!card) return Promise.reject('no card');
-        page = card.getAttribute('href');
-        return Promise.all([get(page), loadCharts(), card.querySelector('.ticker').textContent.trim()]);
+        var pages = [].map.call(doc.querySelectorAll('.stock-cards .card'), function (c) { return c.getAttribute('href'); });
+        for (var i = pages.length - 1; i > 0; i--) {   // shuffle
+          var j = Math.floor(Math.random() * (i + 1)), t = pages[i];
+          pages[i] = pages[j]; pages[j] = t;
+        }
+        return Promise.all([chartFrom(pages.slice(0, 3)), loadCharts()]);
       }).then(function (got) {
-        var m = got[0].match(/window\.CHART = (\{.*?\});<\/script>/);
-        if (!m) throw 'no chart data';
-        draw(JSON.parse(m[1]), got[2]);
+        draw(got[0]);
       }).catch(function () {});
+
+      function chartFrom(pages) {
+        if (!pages.length) return Promise.reject('no chart data');
+        return get(pages[0]).then(function (html) {
+          var m = html.match(/window\.CHART = (\{.*?\});<\/script>/);
+          var d = m && JSON.parse(m[1]);
+          if (!d || !d.candles || d.candles.length < 10) throw 'no chart data';
+          return d;
+        }).catch(function () { return chartFrom(pages.slice(1)); });
+      }
 
       function loadCharts() {
         if (window.LightweightCharts) return Promise.resolve();
@@ -209,11 +216,8 @@
         });
       }
 
-      function draw(d, ticker) {
-        var link = box.querySelector('.hero-chart-ticker'), el = box.querySelector('.hero-chart-plot');
-        link.textContent = ticker;
-        link.href = page;
-        el.setAttribute('aria-label', ticker);
+      function draw(d) {
+        var el = box.querySelector('.hero-chart-plot');
         box.hidden = false;   // must have a size before the chart is created
         try {
           var css = function (name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); };
@@ -246,7 +250,7 @@
           box.hidden = true;
           return;
         }
-        try3D(d, ticker);
+        try3D(d);
       }
 
       // Phones and tablets, low-power devices, data saver and reduced motion keep the 2D chart.
@@ -263,12 +267,9 @@
         return !!(probe.getContext('webgl2') || probe.getContext('webgl'));
       }
 
-      function try3D(d, ticker) {
+      function try3D(d) {
         var stage = document.querySelector('.hero-3d');
         if (!stage || !want3D()) return;
-        var link = stage.querySelector('.hero-chart-ticker');
-        link.textContent = ticker;
-        link.href = page;
         function back() {
           stage.hidden = true;
           stage.classList.remove('is-ready');

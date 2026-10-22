@@ -415,15 +415,6 @@ h1 {
   background: var(--surface);
   box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.8), 0 0 60px -20px var(--glow);
 }
-.hero-chart-ticker {
-  align-self: flex-start;
-  color: var(--text);
-  font-size: 1.125rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  text-decoration: none;
-}
-.hero-chart-ticker:hover { color: var(--accent); }
 .hero-chart-plot { flex: 1; min-height: 0; }
 
 /* 3D hero chart: laid over the 2D chart in the same frame, fades in once it has drawn */
@@ -446,7 +437,6 @@ h1 {
 .hero-3d.is-ready { opacity: 1; }
 .hero-3d.is-dragging { cursor: grabbing; }
 .hero-3d-canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; touch-action: pan-y; }
-.hero-3d .hero-chart-ticker { position: absolute; z-index: 1; top: 18px; left: 20px; }
 .hero-3d-label {
   position: absolute;
   top: 0;
