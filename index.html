@@ -48,6 +48,10 @@
             <a class="hero-chart-ticker"></a>
             <div class="hero-chart-plot" role="img"></div>
           </div>
+          <!-- 3D version of the same chart on capable desktops; the 2D chart stays underneath as the fallback -->
+          <div class="hero-3d" hidden>
+            <a class="hero-chart-ticker"></a>
+          </div>
         </div>
       </div>
       <div class="wrap hero-strip">
@@ -240,7 +244,39 @@
           box.previousElementSibling.hidden = true;   // the screenshot
         } catch (e) {
           box.hidden = true;
+          return;
         }
+        try3D(d, ticker);
+      }
+
+      // Phones, touch screens, low-power devices, data saver and reduced motion keep the 2D chart
+      function want3D() {
+        if (!window.matchMedia || !window.IntersectionObserver || !window.ResizeObserver) return false;
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
+        if (!matchMedia('(min-width: 900px) and (hover: hover) and (pointer: fine)').matches) return false;
+        if ((navigator.hardwareConcurrency || 4) < 4 || (navigator.deviceMemory || 4) < 4) return false;
+        if (navigator.connection && navigator.connection.saveData) return false;
+        var probe = document.createElement('canvas');
+        return !!(probe.getContext('webgl2') || probe.getContext('webgl'));
+      }
+
+      function try3D(d, ticker) {
+        var stage = document.querySelector('.hero-3d');
+        if (!stage || !want3D()) return;
+        var link = stage.querySelector('.hero-chart-ticker');
+        link.textContent = ticker;
+        link.href = page;
+        function back() {
+          stage.hidden = true;
+          stage.classList.remove('is-ready');
+          box.style.visibility = '';
+        }
+        stage.hidden = false;
+        import('./hero3d.js').then(function (m) {
+          m.mount(stage, d, { onFail: back });
+          stage.classList.add('is-ready');
+          box.style.visibility = 'hidden';
+        }).catch(back);
       }
     })();
   </script>
