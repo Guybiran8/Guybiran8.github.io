@@ -65,6 +65,9 @@
 * { box-sizing: border-box; }
 
 html { background: var(--bg); }
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
 
 body {
   margin: 0;
@@ -298,6 +301,24 @@ h1 {
   to { transform: scale(3); opacity: 0; }
 }
 .hero-text .todo { max-width: 34rem; }
+.hero-photo {
+  width: 112px;
+  height: 112px;
+  margin: 0 0 28px;
+  border-radius: 50%;
+  padding: 3px;
+  background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 20%, transparent));
+  box-shadow: 0 0 40px -10px var(--glow);
+}
+.hero-photo[hidden] { display: none; }
+.hero-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  background: var(--surface);
+}
 .hero-text .about {
   max-width: 36rem;
   margin: 0;
@@ -316,7 +337,7 @@ h1 {
 }
 
 /* Homepage project cards: side by side, each links to its page */
-.projects { padding-block: 8px 24px; }
+.projects { padding-block: 8px 24px; scroll-margin-top: 80px; }   /* clears the sticky nav */
 .project-cards {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -368,7 +389,7 @@ h1 {
   letter-spacing: -0.03em;
 }
 .card-link { color: var(--text); text-decoration: none; }
-/* The title link covers the whole card; the buttons sit above it */
+/* The title link covers the whole card */
 .card-link::after { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: inherit; }
 .card-link:focus-visible { outline: none; }
 .card-link:focus-visible::after { outline: 2px solid var(--accent); outline-offset: -2px; }
@@ -380,10 +401,29 @@ h1 {
   margin: 0 0 28px;
   max-width: 60ch;
 }
-.project-card .project-links {
-  position: relative;
-  z-index: 2;
-  margin: auto 0 0;
+.card-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  width: 48px;
+  height: 48px;
+  margin-top: auto;
+  border: 1px solid var(--glass-border-hover);
+  border-radius: 50%;
+  background: var(--glass);
+  color: var(--accent);
+  font-size: 1.375rem;
+  line-height: 1;
+  transition: transform 0.3s var(--ease), background-color 0.3s var(--ease), color 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+.project-card:hover .card-arrow,
+.project-card:has(.card-link:focus-visible) .card-arrow {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+  box-shadow: 0 8px 28px -8px var(--glow);
+  transform: translateX(4px);
 }
 
 /* Project pages */
@@ -696,7 +736,8 @@ footer .wrap {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; }
   .pulse::after { animation: none; }
-  .card:hover, .links a:hover, .project-links a:hover, .preview img:hover, .project-card:hover { transform: none; }
+  .card:hover, .links a:hover, .project-links a:hover, .preview img:hover, .project-card:hover,
+  .project-card:hover .card-arrow { transform: none; }
 }
 
 @media (max-width: 600px) {
@@ -706,6 +747,7 @@ footer .wrap {
   .intro { padding-block: 72px 56px; }
   .hero-grid { padding-block: 48px 24px; }
   .card-body { padding: 24px 22px; }
+  .hero-photo { width: 88px; height: 88px; margin-bottom: 22px; }
   .project-hero { padding-block: 28px 28px; }
   .back-link { margin-top: 28px; }
   .stat { padding: 18px; }
