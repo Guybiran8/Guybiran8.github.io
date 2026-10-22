@@ -50,6 +50,25 @@
       </div>
     </section>
 
+    <!-- Lines copied word for word from reports/NVDA-short-2026-10-20.html -->
+    <section class="debate" id="debate">
+      <div class="debate-head">
+        <a class="debate-ticker" href="reports/NVDA-short-2026-10-20.html">NVIDIA Corporation (NVDA)</a>
+        <button class="debate-replay" type="button" aria-label="Replay" hidden>
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 3v6h6"/></svg>
+        </button>
+      </div>
+      <ol class="debate-chat">
+        <li class="msg bull"><span class="who">Claude (bull)</span><p class="bubble">The drop looks like a pullback [a small move back after a rise], and price still sits just above a tested floor.</p></li>
+        <li class="msg bear"><span class="who">ChatGPT (bear)</span><p class="bubble">The short chart is weak, and a break of nearby support is a small move away.</p></li>
+        <li class="msg bull"><span class="who">Claude (bull)</span><p class="bubble">Fresh demand headlines still show buyers wanting Nvidia chips and new products.</p></li>
+        <li class="msg bear"><span class="who">ChatGPT (bear)</span><p class="bubble">Rate news and peer reports can hit the group again before Nvidia reports.</p></li>
+        <li class="msg bull"><span class="who">Claude (bull)</span><p class="bubble">The business is very profitable, and the stock fell less than other chip names.</p></li>
+        <li class="msg bear"><span class="who">ChatGPT (bear)</span><p class="bubble">Headline orders are not near-term cash, and past report days often fell.</p></li>
+        <li class="msg judge"><span class="who">Grok (judge)</span><p class="bubble">Mixed: the stock is in a pullback [a short drop after a rise] under short averages, and near events can push it either way.</p></li>
+      </ol>
+    </section>
+
     <div class="preview">
       <img class="preview-main" src="img/stock-chart.jpg" alt="MRNA · Guy Biran" width="1360" height="1028" loading="lazy" decoding="async">
       <img src="img/report-top.jpg" alt="Moderna, Inc. (MRNA)" width="1600" height="940" loading="lazy" decoding="async">
@@ -151,5 +170,65 @@
       </ul>
     </div>
   </footer>
+
+  <script>
+    // Live debate: replays the chat with a typing effect when it scrolls into view.
+    // Without JS, or with reduced motion, every message just shows.
+    (function () {
+      var box = document.getElementById('debate');
+      if (!box || !window.IntersectionObserver || !window.matchMedia) return;
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var msgs = [].slice.call(box.querySelectorAll('.msg'));
+      var replay = box.querySelector('.debate-replay');
+      var texts = msgs.map(function (m) { return m.querySelector('.bubble').textContent; });
+      var timers = [], run = 0;
+
+      function later(fn, ms) { timers.push(setTimeout(fn, ms)); }
+      function reset() {
+        run++;
+        timers.forEach(clearTimeout); timers = [];
+        msgs.forEach(function (m, i) {
+          m.classList.remove('shown', 'typing');
+          m.querySelector('.bubble').textContent = texts[i];
+        });
+        box.classList.add('is-playing');
+      }
+      // Typed text plus the untyped rest kept invisible, so the bubble never changes size
+      function type(m, text, done) {
+        var b = m.querySelector('.bubble'), n = 0, id = run;
+        var shown = document.createElement('span'), rest = document.createElement('span');
+        rest.className = 'rest'; rest.textContent = text;
+        b.textContent = ''; b.appendChild(shown); b.appendChild(rest);
+        m.classList.add('shown', 'typing');
+        (function step() {
+          if (id !== run) return;
+          n = Math.min(text.length, n + 2);
+          shown.textContent = text.slice(0, n);
+          rest.textContent = text.slice(n);
+          if (n < text.length) later(step, 22);
+          else { b.textContent = text; m.classList.remove('typing'); done(); }
+        })();
+      }
+      function play() {
+        reset();
+        var i = 0;
+        (function next() {
+          if (i >= msgs.length) { replay.hidden = false; return; }
+          var m = msgs[i], t = texts[i++];
+          if (m.classList.contains('judge')) {
+            later(function () { m.classList.add('shown'); later(next, 900); }, 500);
+          } else {
+            later(function () { type(m, t, function () { later(next, 450); }); }, 350);
+          }
+        })();
+      }
+
+      box.classList.add('is-playing');
+      new IntersectionObserver(function (entries, obs) {
+        if (entries[0].isIntersecting) { obs.disconnect(); play(); }
+      }, { threshold: 0.35 }).observe(box);
+      replay.addEventListener('click', play);
+    })();
+  </script>
 </body>
 </html>

@@ -617,6 +617,130 @@ h1 {
 .project-links p { margin: 0; }
 
 /* Product preview: one big shot, two smaller beside it */
+/* Live debate: real lines from one report, played as a chat */
+.debate {
+  margin: 0 0 24px;
+  padding: 28px 32px 32px;
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  background: var(--glass);
+  box-shadow: var(--shadow);
+}
+.debate-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 36px;
+  margin-bottom: 22px;
+}
+.debate-ticker {
+  font: 500 0.875rem/1.4 var(--mono);
+  letter-spacing: 0.02em;
+  color: var(--accent);
+  text-decoration: none;
+}
+.debate-ticker:hover { text-decoration: underline; text-underline-offset: 3px; }
+.debate-replay {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  background: var(--glass);
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.2s var(--ease), border-color 0.2s var(--ease), transform 0.3s var(--ease);
+}
+.debate-replay[hidden] { display: none; }
+.debate-replay svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.debate-replay:hover { color: var(--text); border-color: var(--glass-border-hover); transform: rotate(-40deg); }
+.debate-replay:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.debate-chat {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.msg {
+  --side: #2e9e4f;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: min(640px, 78%);
+}
+.msg.bear { --side: #e04848; align-self: flex-end; align-items: flex-end; }
+.who {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 4px 6px;
+  font: 500 0.75rem/1.4 var(--mono);
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+.who::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--side); box-shadow: 0 0 8px var(--side); }
+.bubble {
+  margin: 0;
+  padding: 12px 16px;
+  border: 1px solid color-mix(in srgb, var(--side) 45%, transparent);
+  border-radius: 18px 18px 18px 6px;
+  background: color-mix(in srgb, var(--side) 13%, var(--surface));
+  color: var(--text);
+  font-size: 0.9688rem;
+  line-height: 1.55;
+}
+.msg.bear .bubble { border-radius: 18px 18px 6px 18px; }
+.msg.judge {
+  --side: var(--accent);
+  align-self: stretch;
+  align-items: stretch;
+  max-width: none;
+  margin-top: 10px;
+}
+.msg.judge .who { color: var(--accent); }
+.msg.judge .bubble {
+  padding: 16px 20px;
+  border-radius: 16px;
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  background: color-mix(in srgb, var(--accent) 9%, var(--surface));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 18%, transparent), 0 0 36px -8px var(--glow);
+  font-size: 1.0313rem;
+}
+.bubble .rest { visibility: hidden; }
+.msg.typing .bubble span:first-child::after {
+  content: "";
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: -0.12em;
+  background: var(--side);
+  animation: caret 0.9s steps(1) infinite;
+}
+@keyframes caret { 50% { opacity: 0; } }
+/* While playing (JS only): messages wait hidden in place, so nothing below jumps */
+.debate.is-playing .msg { visibility: hidden; opacity: 0; transform: translateY(8px); }
+.debate.is-playing .msg.shown {
+  visibility: visible;
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.35s var(--ease), transform 0.35s var(--ease);
+}
+.debate.is-playing .msg.judge { transform: translateY(22px) scale(0.98); }
+.debate.is-playing .msg.judge.shown {
+  transform: none;
+  transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+}
+.debate.is-playing .msg.judge.shown .bubble { animation: verdict-glow 1.6s var(--ease) 0.3s; }
+@keyframes verdict-glow {
+  40% { box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent), 0 0 60px -4px var(--glow); }
+}
+
 .preview {
   display: grid;
   grid-template-columns: 1.55fr 1fr;
@@ -844,6 +968,9 @@ footer .wrap {
   .stat { padding: 18px; }
   .scan-strip { font-size: 0.875rem; border-radius: 18px; }
   .part { padding: 22px 20px; border-radius: 16px; }
+  .debate { padding: 20px 16px 22px; border-radius: 16px; }
+  .msg { max-width: 90%; }
+  .bubble { font-size: 0.9375rem; padding: 11px 14px; }
   .parts { gap: 14px; }
   footer .wrap { flex-direction: column; align-items: flex-start; }
   .preview { grid-template-columns: 1fr; grid-template-rows: none; }
