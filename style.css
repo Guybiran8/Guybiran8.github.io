@@ -336,6 +336,31 @@ h1 {
   box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.8), 0 0 60px -20px var(--glow);
 }
 
+/* Live hero chart: same frame and shape as the screenshot it replaces */
+.hero-shot img[hidden],
+.hero-chart[hidden] { display: none; }
+.hero-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  aspect-ratio: 1360 / 1028;
+  padding: 20px 20px 14px;
+  border-radius: 18px;
+  border: 1px solid var(--glass-border-hover);
+  background: var(--surface);
+  box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.8), 0 0 60px -20px var(--glow);
+}
+.hero-chart-ticker {
+  align-self: flex-start;
+  color: var(--text);
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+.hero-chart-ticker:hover { color: var(--accent); }
+.hero-chart-plot { flex: 1; min-height: 0; }
+
 /* Homepage project cards: side by side, each links to its page */
 .projects { padding-block: 8px 24px; scroll-margin-top: 80px; }   /* clears the sticky nav */
 .project-cards {
@@ -748,6 +773,7 @@ footer .wrap {
   .hero-grid { padding-block: 48px 24px; }
   .card-body { padding: 24px 22px; }
   .hero-photo { width: 88px; height: 88px; margin-bottom: 22px; }
+  .hero-chart { padding: 14px 12px 10px; }
   .project-hero { padding-block: 28px 28px; }
   .back-link { margin-top: 28px; }
   .stat { padding: 18px; }

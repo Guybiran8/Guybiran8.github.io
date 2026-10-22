@@ -43,6 +43,11 @@
         </div>
         <div class="hero-shot">
           <img class="preview-main" src="img/stock-chart.jpg" alt="MRNA · Guy Biran" width="1360" height="1028" fetchpriority="high" decoding="async">
+          <!-- Live chart of the first stock on reports.html; replaces the screenshot only once it has drawn -->
+          <div class="hero-chart" hidden>
+            <a class="hero-chart-ticker"></a>
+            <div class="hero-chart-plot" role="img"></div>
+          </div>
         </div>
       </div>
       <div class="wrap hero-strip">
@@ -88,21 +93,88 @@
   </footer>
 
   <script>
-    // Live scan strip: copy the counts from reports.html's "Scan of ..." line. Hidden if anything fails.
     (function () {
-      var strip = document.getElementById('scan-strip');
-      if (!strip || !window.fetch || !window.DOMParser) return;
-      fetch('reports.html', { cache: 'no-store' })
-        .then(function (r) { return r.ok ? r.text() : Promise.reject(r.status); })
-        .then(function (html) {
-          var line = new DOMParser().parseFromString(html, 'text/html').querySelector('.scan-line');
-          var first = line && line.firstChild;
-          var counts = first && first.nodeType === 3 ? first.nodeValue.replace(/[\s·]+$/, '').trim() : '';
-          if (!counts) return;
-          strip.querySelector('.scan-text').textContent = counts;
-          strip.hidden = false;
-        })
-        .catch(function () {});
+      if (!window.fetch || !window.DOMParser) return;
+      function get(url) {
+        return fetch(url, { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : Promise.reject(r.status); });
+      }
+      var reports = get('reports.html').then(function (html) { return new DOMParser().parseFromString(html, 'text/html'); });
+
+      // Live scan strip: copy the counts from reports.html's "Scan of ..." line. Hidden if anything fails.
+      reports.then(function (doc) {
+        var strip = document.getElementById('scan-strip');
+        var line = doc.querySelector('.scan-line');
+        var first = line && line.firstChild;
+        var counts = first && first.nodeType === 3 ? first.nodeValue.replace(/[\s·]+$/, '').trim() : '';
+        if (!strip || !counts) return;
+        strip.querySelector('.scan-text').textContent = counts;
+        strip.hidden = false;
+      }).catch(function () {});
+
+      // Live hero chart: the first card's stock page holds its chart data in window.CHART. Drawn with the
+      // same Lightweight Charts setup as the stock pages; the screenshot stays if anything fails.
+      var box = document.querySelector('.hero-chart');
+      if (!box) return;
+      var page;
+      reports.then(function (doc) {
+        var card = doc.querySelector('.stock-cards .card');
+        if (!card) return Promise.reject('no card');
+        page = card.getAttribute('href');
+        return Promise.all([get(page), loadCharts(), card.querySelector('.ticker').textContent.trim()]);
+      }).then(function (got) {
+        var m = got[0].match(/window\.CHART = (\{.*?\});<\/script>/);
+        if (!m) throw 'no chart data';
+        draw(JSON.parse(m[1]), got[2]);
+      }).catch(function () {});
+
+      function loadCharts() {
+        if (window.LightweightCharts) return Promise.resolve();
+        return new Promise(function (ok, fail) {
+          var s = document.createElement('script');
+          s.src = 'https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js';
+          s.onload = ok;
+          s.onerror = fail;
+          document.head.appendChild(s);
+        });
+      }
+
+      function draw(d, ticker) {
+        var link = box.querySelector('.hero-chart-ticker'), el = box.querySelector('.hero-chart-plot');
+        link.textContent = ticker;
+        link.href = page;
+        el.setAttribute('aria-label', ticker);
+        box.hidden = false;   // must have a size before the chart is created
+        try {
+          var css = function (name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); };
+          var pts = function (rows) { return rows.map(function (r) { return { time: r[0], value: r[1] }; }); };
+          var chart = LightweightCharts.createChart(el, {
+            autoSize: true,
+            layout: { background: { color: css('--surface') }, textColor: css('--muted') },
+            grid: { vertLines: { color: css('--border') }, horzLines: { color: css('--border') } },
+            rightPriceScale: { borderVisible: false },
+            timeScale: { borderVisible: false },
+            handleScroll: { mouseWheel: false, pressedMouseMove: true, horzTouchDrag: true, vertTouchDrag: false },
+            handleScale: { mouseWheel: false, pinch: true, axisPressedMouseMove: true }
+          });
+          var candles = chart.addCandlestickSeries({
+            upColor: '#2e9e4f', downColor: '#e04848', borderVisible: false,
+            wickUpColor: '#2e9e4f', wickDownColor: '#e04848'
+          });
+          candles.setData(d.candles.map(function (c) { return { time: c[0], open: c[1], high: c[2], low: c[3], close: c[4] }; }));
+          var opts = { lineWidth: 1, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false };
+          chart.addLineSeries(Object.assign({ color: '#a259d9' }, opts)).setData(pts(d.ma20));
+          chart.addLineSeries(Object.assign({ color: css('--accent') }, opts)).setData(pts(d.ma50));
+          chart.addLineSeries(Object.assign({ color: '#f59f00' }, opts)).setData(pts(d.ma200));
+          d.levels.forEach(function (l) {
+            candles.createPriceLine({ price: l.price, color: l.kind === 'support' ? '#2e9e4f' : '#e04848',
+                                      lineWidth: 1, lineStyle: 2, axisLabelVisible: true, title: l.title });
+          });
+          chart.timeScale().fitContent();
+          box.previousElementSibling.hidden = true;   // the screenshot
+        } catch (e) {
+          box.hidden = true;
+        }
+      }
     })();
   </script>
 </body>
