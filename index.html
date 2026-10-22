@@ -58,6 +58,35 @@
       </div>
     </header>
 
+    <section class="home-stats">
+      <div class="wrap stats-row">
+        <div class="stat"><span class="stat-num"><span class="count" data-to="43">43</span></span><span class="stat-label">stocks scanned every weekday</span></div>
+        <div class="stat"><span class="stat-num">~<span class="count" data-to="5">5</span> min</span><span class="stat-label">per report (was ~21)</span></div>
+        <div class="stat"><span class="stat-num"><span class="count" data-to="3">3</span></span><span class="stat-label">AIs working together</span></div>
+        <div class="stat"><span class="stat-num"><span class="count" data-to="55">55</span></span><span class="stat-label">automated tests</span></div>
+      </div>
+    </section>
+
+    <section class="home-debate">
+      <div class="wrap home-debate-grid">
+        <div class="home-debate-intro">
+          <h2 class="section-title"><a href="stock-debate.html#debate">Stock Debate</a></h2>
+          <a class="card-arrow" href="stock-debate.html#debate" tabindex="-1" aria-hidden="true">→</a>
+        </div>
+        <div class="debate">
+          <div class="debate-head">
+            <a class="debate-ticker" href="reports/NVDA-short-2026-10-20.html">NVIDIA Corporation (NVDA)</a>
+          </div>
+          <ol class="debate-chat">
+          <li class="msg bull"><span class="who">Claude (bull)</span><p class="bubble">The drop looks like a pullback [a small move back after a rise], and price still sits just above a tested floor.</p></li>
+          <li class="msg bear"><span class="who">ChatGPT (bear)</span><p class="bubble">The short chart is weak, and a break of nearby support is a small move away.</p></li>
+          <li class="msg bull"><span class="who">Claude (bull)</span><p class="bubble">Fresh demand headlines still show buyers wanting Nvidia chips and new products.</p></li>
+          <li class="msg bear"><span class="who">ChatGPT (bear)</span><p class="bubble">Rate news and peer reports can hit the group again before Nvidia reports.</p></li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
     <section class="wrap projects" id="projects" aria-labelledby="projects-title">
       <h2 class="section-title" id="projects-title">Projects</h2>
       <div class="project-cards">
@@ -70,6 +99,7 @@
         </div>
       </article>
       <article class="project-card" id="trading-agent">
+        <div class="card-shot"><img src="img/trading-agent.svg" alt="" width="1488" height="1024" loading="lazy" decoding="async"></div>
         <div class="card-body">
           <h3><a class="card-link" href="trading-agent.html">Trading Agent</a></h3>
           <p class="summary">My automated stock scanning agent.</p>
@@ -92,7 +122,44 @@
     </div>
   </footer>
 
+  <script src="debate.js"></script>
   <script>
+    // Numbers count up once when they scroll into view (final values are already in the HTML)
+    (function () {
+      var nums = document.querySelectorAll('.home-stats .count');
+      if (!nums.length || !window.IntersectionObserver || !window.matchMedia) return;
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      [].forEach.call(nums, function (n) { n.textContent = '0'; });
+      new IntersectionObserver(function (entries, obs) {
+        if (!entries[0].isIntersecting) return;
+        obs.disconnect();
+        var start = performance.now(), dur = 1400;
+        (function tick(now) {
+          var t = Math.min(1, (now - start) / dur), e = 1 - Math.pow(1 - t, 3);
+          [].forEach.call(nums, function (n) { n.textContent = Math.round(e * +n.dataset.to); });
+          if (t < 1) requestAnimationFrame(tick);
+        })(start);
+      }, { threshold: 0.5 }).observe(document.querySelector('.home-stats'));
+    })();
+
+    // Project cards tilt slightly toward the pointer, with a glow that follows it
+    (function () {
+      if (!window.matchMedia || !matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      [].forEach.call(document.querySelectorAll('.project-card'), function (card) {
+        card.addEventListener('pointermove', function (e) {
+          var r = card.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+          card.style.setProperty('--rx', ((0.5 - y) * 4).toFixed(2) + 'deg');
+          card.style.setProperty('--ry', ((x - 0.5) * 5).toFixed(2) + 'deg');
+          card.style.setProperty('--mx', (x * 100).toFixed(1) + '%');
+          card.style.setProperty('--my', (y * 100).toFixed(1) + '%');
+        });
+        card.addEventListener('pointerleave', function () {
+          card.style.removeProperty('--rx'); card.style.removeProperty('--ry');
+        });
+      });
+    })();
+
     (function () {
       if (!window.fetch || !window.DOMParser) return;
       function get(url) {
