@@ -249,11 +249,14 @@
         try3D(d, ticker);
       }
 
-      // Phones, touch screens, low-power devices, data saver and reduced motion keep the 2D chart
+      // Phones and tablets, low-power devices, data saver and reduced motion keep the 2D chart.
+      // A phone or tablet is a coarse main pointer or a small screen; the window size and a laptop's
+      // touchscreen don't count, so a half-width window on a touchscreen laptop still gets 3D.
       function want3D() {
         if (!window.matchMedia || !window.IntersectionObserver || !window.ResizeObserver) return false;
         if (matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
-        if (!matchMedia('(min-width: 900px) and (hover: hover) and (pointer: fine)').matches) return false;
+        if (!matchMedia('(pointer: fine)').matches) return false;
+        if (Math.max(screen.width, screen.height) < 1024) return false;
         if ((navigator.hardwareConcurrency || 4) < 4 || (navigator.deviceMemory || 4) < 4) return false;
         if (navigator.connection && navigator.connection.saveData) return false;
         var probe = document.createElement('canvas');
