@@ -597,6 +597,45 @@ h1 {
 .flow marker path { fill: var(--accent); }
 .flow .dot.bull { fill: #2e9e4f; }
 .flow .dot.bear { fill: #e04848; }
+.flow .node.bull { stroke: #2e9e4f; fill: color-mix(in srgb, #2e9e4f 12%, var(--surface)); }
+.flow .node.bear { stroke: #e04848; fill: color-mix(in srgb, #e04848 12%, var(--surface)); }
+.flow .pulses path {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-dasharray: 16 300;
+  stroke-dashoffset: 16;
+  opacity: 0;
+  filter: drop-shadow(0 0 6px var(--accent));
+}
+/* Scroll-in sequence (JS adds .is-armed; without it, or with reduced motion, everything stays lit).
+   Research -> lines -> bull/bear -> lines -> judge -> line -> report, about 3.4s. */
+.how.is-armed .step { opacity: 0.28; }
+.how.is-armed .wires path { opacity: 0.18; }
+.how.play .step { animation: step-on 0.6s var(--ease) both; }
+.how.play .step .node { animation: step-flash 1.1s var(--ease) both; animation-delay: inherit; }
+.how.play .wires path { animation: wire-on 0.35s var(--ease) both; }
+.how.play .pulses path { animation: pulse-run 0.7s cubic-bezier(0.45, 0, 0.35, 1) both; }
+.how.play .s1 { animation-delay: 0s; }
+.how.play .pulses .w1 { animation-delay: 0.35s; }
+.how.play .wires .w1 { animation-delay: 0.85s; }
+.how.play .s2 { animation-delay: 0.95s; }
+.how.play .pulses .w2 { animation-delay: 1.4s; }
+.how.play .wires .w2 { animation-delay: 1.9s; }
+.how.play .s3 { animation-delay: 2s; }
+.how.play .pulses .w3 { animation-delay: 2.45s; }
+.how.play .wires .w3 { animation-delay: 2.85s; }
+.how.play .s4 { animation-delay: 2.9s; }
+@keyframes step-on { from { opacity: 0.28; } to { opacity: 1; } }
+@keyframes step-flash { 0% { filter: none; } 35% { filter: drop-shadow(0 0 14px var(--glow)); } }
+@keyframes wire-on { from { opacity: 0.18; } to { opacity: 1; } }
+@keyframes pulse-run {
+  0% { stroke-dashoffset: 16; opacity: 0; }
+  12% { opacity: 1; }
+  88% { opacity: 1; }
+  100% { stroke-dashoffset: -100; opacity: 0; }
+}
 .project-hero h1 { margin-bottom: 20px; }
 .project-hero .summary { font-size: 1.25rem; }
 .project-page .preview { margin-bottom: 24px; }
