@@ -16,6 +16,24 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="style.css">
+  <script>
+    // Decided before the hero paints: devices that will get the 3D chart show an empty loading frame
+    // instead of the screenshot or 2D chart. Phones and tablets, low-power devices, data saver and reduced
+    // motion keep the 2D chart. A phone or tablet is a coarse main pointer or a small screen; the window
+    // size and a laptop's touchscreen don't count, so a half-width window on a touchscreen laptop gets 3D.
+    (function () {
+      try {
+        if (!window.matchMedia || !window.IntersectionObserver || !window.ResizeObserver || !window.fetch || !window.DOMParser) return;
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        if (!matchMedia('(pointer: fine)').matches) return;
+        if (Math.max(screen.width, screen.height) < 1024) return;
+        if ((navigator.hardwareConcurrency || 4) < 4 || (navigator.deviceMemory || 4) < 4) return;
+        if (navigator.connection && navigator.connection.saveData) return;
+        var probe = document.createElement('canvas');
+        if (probe.getContext('webgl2') || probe.getContext('webgl')) document.documentElement.classList.add('hero-3d-pending');
+      } catch (e) {}
+    })();
+  </script>
 </head>
 <body>
   <nav class="nav">
@@ -62,7 +80,7 @@
     <section class="home-stats">
       <div class="wrap stats-row">
         <div class="stat"><span class="stat-num"><span class="count" data-to="43">43</span></span><span class="stat-label">stocks scanned every weekday</span></div>
-        <div class="stat"><span class="stat-num">~<span class="count" data-to="5">5</span> min</span><span class="stat-label">per report (was ~21)</span></div>
+        <div class="stat"><span class="stat-num">~<span class="count" data-to="5">5</span> min</span><span class="stat-label">per report</span></div>
         <div class="stat"><span class="stat-num"><span class="count" data-to="3">3</span></span><span class="stat-label">AIs working together</span></div>
         <div class="stat"><span class="stat-num"><span class="count" data-to="55">55</span></span><span class="stat-label">automated tests</span></div>
       </div>
@@ -179,30 +197,55 @@
         strip.hidden = false;
       }).catch(function () {});
 
-      // Live hero chart: a random card's stock page holds its chart data in window.CHART. If that page or its
-      // data fails, up to two more random stocks are tried. Drawn with the same Lightweight Charts setup as
-      // the stock pages; no stock name is shown. The screenshot stays if everything fails.
+      // Live hero chart: a random card's stock page holds its chart data in window.CHART. Stocks with both a
+      // support and a resistance level near their recent prices are preferred; if none has both, any stock
+      // with chart data is used. No stock name is shown. Capable desktops (see the head script) show an empty
+      // loading frame and go straight to 3D; everything else, or a failed 3D, gets the 2D chart drawn with the
+      // same Lightweight Charts setup as the stock pages. The screenshot comes back if everything fails.
       var box = document.querySelector('.hero-chart');
       if (!box) return;
+      var root = document.documentElement, use3D = root.classList.contains('hero-3d-pending');
       reports.then(function (doc) {
         var pages = [].map.call(doc.querySelectorAll('.stock-cards .card'), function (c) { return c.getAttribute('href'); });
         for (var i = pages.length - 1; i > 0; i--) {   // shuffle
           var j = Math.floor(Math.random() * (i + 1)), t = pages[i];
           pages[i] = pages[j]; pages[j] = t;
         }
-        return Promise.all([chartFrom(pages.slice(0, 3)), loadCharts()]);
-      }).then(function (got) {
-        draw(got[0]);
-      }).catch(function () {});
+        return pickChart(pages, null);
+      }).then(function (d) {
+        if (use3D) try3D(d);
+        else draw2D(d);
+      }).catch(giveUp);
 
-      function chartFrom(pages) {
-        if (!pages.length) return Promise.reject('no chart data');
-        return get(pages[0]).then(function (html) {
+      // Checks the shuffled pages four at a time and returns the first with nearby support and resistance,
+      // or else the first with any chart data.
+      function pickChart(pages, fallback) {
+        if (!pages.length) return fallback ? Promise.resolve(fallback) : Promise.reject('no chart data');
+        return Promise.all(pages.slice(0, 4).map(function (p) { return chartOf(p).catch(function () { return null; }); }))
+          .then(function (got) {
+            var ok = got.filter(Boolean), good = ok.filter(hasNearbyLevels);
+            return good.length ? good[0] : pickChart(pages.slice(4), fallback || ok[0]);
+          });
+      }
+
+      function chartOf(page) {
+        return get(page).then(function (html) {
           var m = html.match(/window\.CHART = (\{.*?\});<\/script>/);
           var d = m && JSON.parse(m[1]);
           if (!d || !d.candles || d.candles.length < 10) throw 'no chart data';
           return d;
-        }).catch(function () { return chartFrom(pages.slice(1)); });
+        });
+      }
+
+      // "Nearby" uses the same window the 3D chart uses to decide which levels it shows: the last ~3 months'
+      // low-to-high range, widened by 15% on each side.
+      function hasNearbyLevels(d) {
+        var rows = d.candles.slice(-60);
+        var lo = Math.min.apply(null, rows.map(function (c) { return c[3]; }));
+        var hi = Math.max.apply(null, rows.map(function (c) { return c[2]; }));
+        var pad = (hi - lo) * 0.15;
+        var near = (d.levels || []).filter(function (l) { return l.price > lo - pad && l.price < hi + pad; });
+        return near.some(function (l) { return l.kind === 'support'; }) && near.some(function (l) { return l.kind === 'resistance'; });
       }
 
       function loadCharts() {
@@ -216,11 +259,20 @@
         });
       }
 
-      function draw(d) {
-        var el = box.querySelector('.hero-chart-plot');
-        box.hidden = false;   // must have a size before the chart is created
-        try {
-          var css = function (name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); };
+      // Back to the screenshot
+      function giveUp() {
+        root.classList.remove('hero-3d-pending');
+        box.hidden = true;
+        box.previousElementSibling.hidden = false;
+      }
+
+      function draw2D(d) {
+        return loadCharts().then(function () {
+          var el = box.querySelector('.hero-chart-plot');
+          root.classList.remove('hero-3d-pending');
+          box.style.visibility = '';
+          box.hidden = false;   // must have a size before the chart is created
+          var css = function (name) { return getComputedStyle(root).getPropertyValue(name).trim(); };
           var pts = function (rows) { return rows.map(function (r) { return { time: r[0], value: r[1] }; }); };
           var chart = LightweightCharts.createChart(el, {
             autoSize: true,
@@ -246,40 +298,28 @@
           });
           chart.timeScale().fitContent();
           box.previousElementSibling.hidden = true;   // the screenshot
-        } catch (e) {
-          box.hidden = true;
-          return;
-        }
-        try3D(d);
+        }).catch(giveUp);
       }
 
-      // Phones and tablets, low-power devices, data saver and reduced motion keep the 2D chart.
-      // A phone or tablet is a coarse main pointer or a small screen; the window size and a laptop's
-      // touchscreen don't count, so a half-width window on a touchscreen laptop still gets 3D.
-      function want3D() {
-        if (!window.matchMedia || !window.IntersectionObserver || !window.ResizeObserver) return false;
-        if (matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
-        if (!matchMedia('(pointer: fine)').matches) return false;
-        if (Math.max(screen.width, screen.height) < 1024) return false;
-        if ((navigator.hardwareConcurrency || 4) < 4 || (navigator.deviceMemory || 4) < 4) return false;
-        if (navigator.connection && navigator.connection.saveData) return false;
-        var probe = document.createElement('canvas');
-        return !!(probe.getContext('webgl2') || probe.getContext('webgl'));
-      }
-
+      // The empty frame (.hero-chart under .hero-3d-pending) holds the space and shimmers until 3D has drawn.
+      // If 3D can't load, or fails later (lost context, too slow), the 2D chart is drawn into that frame.
       function try3D(d) {
         var stage = document.querySelector('.hero-3d');
-        if (!stage || !want3D()) return;
+        var drawn2D = false;
         function back() {
           stage.hidden = true;
           stage.classList.remove('is-ready');
-          box.style.visibility = '';
+          if (!drawn2D) { drawn2D = true; draw2D(d); }
         }
+        if (!stage) { drawn2D = true; return draw2D(d); }
         stage.hidden = false;
         import('./hero3d.js').then(function (m) {
           m.mount(stage, d, { onFail: back });
+          root.classList.remove('hero-3d-pending');
+          box.previousElementSibling.hidden = true;   // the screenshot
+          box.hidden = false;   // the frame stays as the sizer under the 3D chart
           stage.classList.add('is-ready');
-          box.style.visibility = 'hidden';
+          setTimeout(function () { if (stage.classList.contains('is-ready')) box.style.visibility = 'hidden'; }, 900);
         }).catch(back);
       }
     })();
