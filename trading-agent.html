@@ -8,7 +8,7 @@
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Trading Agent · Guy Biran">
-  <meta property="og:description" content="It scans stocks, analyzes them using technical analysis, sends alerts, and tracks each stock until it's time to sell.">
+  <meta property="og:description" content="It scans stocks, analyzes them using technical analysis, and tracks each stock until its exit rules say to sell.">
   <meta property="og:url" content="https://guybiran8.github.io/trading-agent.html">
   <meta property="og:image" content="https://guybiran8.github.io/img/og-image.jpg">
   <meta property="og:image:width" content="1200">
@@ -33,7 +33,7 @@
     <a class="back-link" href="index.html#projects">← All projects</a>
     <header class="project-hero">
       <h1>Trading Agent</h1>
-      <p class="summary">It scans stocks, analyzes them using technical analysis, sends alerts, and tracks each stock until it's time to sell.</p>
+      <p class="summary">It scans stocks, analyzes them using technical analysis, and tracks each stock until its exit rules say to sell.</p>
       <div class="project-links">
         <p><a href="https://github.com/Guybiran8/trading-agent">View the code</a></p>
       </div>
@@ -42,15 +42,15 @@
     <div class="parts">
         <section class="part">
           <h2>What I built</h2>
-          <p>The agent scans stocks in the Nasdaq, Russell and S&amp;P 500, looks at their charts, and analyzes breakouts using support and resistance, moving averages, volume and more. When it finds a good stock, it sends me a message on Telegram that tells me the price to exit at if it goes down or up and the potential gain. Then it tracks the stock until it exits. I came up with the strategy ideas and ways to fix problems, and Claude did most of the coding.</p>
+          <p>The agent scans stocks in the Nasdaq, Russell and S&amp;P 500, looks at their charts, and analyzes breakouts using support and resistance, moving averages, volume and more. When it finds a stock that matches my setup rules, it sends me a message on Telegram that tells me the price to exit at if it goes down or up and the potential gain. Then it tracks the stock until it exits. I came up with the strategy ideas and ways to fix problems, and Claude did most of the coding.</p>
         </section>
         <section class="part">
           <h2>Challenges</h2>
-          <p>At first I thought the agent was genuinely broken, like it had all these indicators just to guess what's a buy and what isn't. But it just couldn't track a trade the way it was supposed to. It could find a stock, but it couldn't take profit. I scanned the agent for all of its issues and realized it could only exit trades on a stop loss, so I made it also exit wins when the target hits.</p>
+          <p>At first I thought the agent was genuinely broken, like it had all these indicators just to guess what's a buy and what isn't. Part of it was that it couldn't track a trade. After I fixed that, I found a bigger problem: its stock picks. It could find a stock, but it couldn't take profit. I scanned the agent for all of its issues and realized it could only exit trades on a stop loss, so I made it also exit wins when the target hits.</p>
         </section>
         <section class="part">
           <h2>What I learned</h2>
-          <p>I was quick to assume the agent was broken instead of checking it myself. A bad number doesn't always mean a bad strategy. Sometimes the problem is in how it's measured, so now I check how results are counted before I judge something.</p>
+          <p>I was quick to assume the agent was broken instead of checking it myself. A bad number doesn't always mean a bad strategy, sometimes the problem is how it's measured. But once I fixed how it tracks trades, the real problem showed up: the way it picks stocks. It still does worse than picking at random, so that's what I'm rebuilding next.</p>
         </section>
         <section class="part">
           <h2>Results</h2>
