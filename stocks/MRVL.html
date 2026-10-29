@@ -15,6 +15,10 @@
     .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin: 16px 0; }
     .panel h2 { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
     .chart { width: 100%; height: 340px; }
+    .why-lead { margin: 0 0 12px; }
+    .checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+    .checks li { display: flex; gap: 10px; align-items: baseline; line-height: 1.5; }
+    .checks .mark { flex: none; }
     .legend { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 6px; font-size: 0.8rem; color: var(--muted); }
     .swatch { display: inline-block; width: 14px; height: 3px; margin-right: 5px; vertical-align: middle; border-radius: 2px; }
     .swatch.ma20 { background: #a259d9; }
@@ -54,6 +58,20 @@
       <p class="name">Marvell Technology, Inc.</p>
       <div class="tag">Uptrend</div>
     </header>
+    <section class="panel why-list">
+      <h2>Why it's on this list</h2>
+      <p class="why-lead">Scan of Oct 28: <b>Watch closely</b>. The price and its averages aren&#x27;t lined up yet.</p>
+      <ul class="checks">
+        <li><span class="mark" role="img" aria-label="Pass">✅</span> <span><b>Trades enough:</b> about $5,258M of shares change hands a day (20-day average); the list needs at least $10M.</span></li>
+        <li><span class="mark" role="img" aria-label="Pass">✅</span> <span><b>In an uptrend:</b> price $251.65, 50-day average $244.04, 200-day average $181.87; it needs the price above the 50-day and the 50-day above the 200-day.</span></li>
+        <li><span class="mark" role="img" aria-label="Fail">❌</span> <span><b>Averages not lined up:</b> price $251.65, 20-day $254.25, 50-day $244.04, 200-day $181.87; a setup needs each one above the next.</span></li>
+        <li><span class="mark" role="img" aria-label="Pass">✅</span> <span><b>Longer averages rising:</b> the 50-day average moved +1.7% in 10 days and the 200-day +10.2% in 20 days; both need to be above 0%.</span></li>
+        <li><span class="mark" role="img" aria-label="Fail">❌</span> <span><b>Weaker than the market:</b> -6.0% vs SPY over 20 days and +14.8% over 60 days; both need to be above 0%.</span></li>
+        <li><span class="mark" role="img" aria-label="Pass">✅</span> <span><b>Nearby floor:</b> the nearest floor is $242.86 (support level, touched 2 times), 6.5% below; it needs to be within 15%.</span></li>
+        <li><span class="mark" role="img" aria-label="Pass">✅</span> <span><b>Room to move:</b> the next ceiling ($300.53) is 3.0 times as far as the floor; a setup needs 1.5 or more.</span></li>
+        <li><span class="mark" role="img" aria-label="Fail">❌</span> <span><b>Price swings aren&#x27;t tightening:</b> the recent range is 1.04 of the earlier range (10-day vs 50-day average daily range); a setup needs 0.8 or less.</span></li>
+      </ul>
+    </section>
     <section class="panel">
       <h2>Chart today (updated daily)</h2>
       <div class="chart" role="img" aria-label="MRVL daily candles for the last 12 months"></div>
